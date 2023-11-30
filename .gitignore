@@ -1,1 +1,16 @@
 node_modules
+package-lock.json
+.vscode
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.serverless
+.vercel
+coverage
+.nyc_output
