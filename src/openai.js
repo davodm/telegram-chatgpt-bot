@@ -18,6 +18,7 @@ class OpenAI {
 
   constructor() {
     const configuration = new Configuration({
+      organization: process.env.OPENAI_ORGANIZATION,
       apiKey: process.env.OPENAI_API_KEY,
     });
     this.openAi = new OpenAIApi(configuration);
@@ -26,7 +27,7 @@ class OpenAI {
   async chat(messages) {
     try {
       const response = await this.openAi.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: process.env.OPENAI_MODEL || "gpt-3.5-turbo",
         messages,
       });
 
@@ -39,7 +40,7 @@ class OpenAI {
   async translate(messages) {
     try {
       const response = await this.openAi.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: process.env.OPENAI_MODEL || "gpt-3.5-turbo",
         messages,
       });
 
