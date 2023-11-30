@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from "openai";
+import { OpenAI } from "openai";
 import { createReadStream, createWriteStream } from "fs";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const engine = process.env.OPENAI_MODEL || "gpt-3.5-turbo"; //https://platform.openai.com/docs/models/gpt-3-5
 
 class OpenAI {
   roles = {
@@ -21,13 +22,13 @@ class OpenAI {
       organization: process.env.OPENAI_ORGANIZATION,
       apiKey: process.env.OPENAI_API_KEY,
     });
-    this.openAi = new OpenAIApi(configuration);
+    this.openAi = new OpenAI(configuration);
   }
 
   async chat(messages) {
     try {
-      const response = await this.openAi.createChatCompletion({
-        model: process.env.OPENAI_MODEL || "gpt-3.5-turbo",
+      const response = await this.openAi.chat.completions.create({
+        model: engine,
         messages,
       });
 
@@ -39,8 +40,8 @@ class OpenAI {
 
   async translate(messages) {
     try {
-      const response = await this.openAi.createChatCompletion({
-        model: process.env.OPENAI_MODEL || "gpt-3.5-turbo",
+      const response = await this.openAi.chat.completions.create({
+        model: engine,
         messages,
       });
 
