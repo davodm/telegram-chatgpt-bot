@@ -10,7 +10,7 @@ dotenv.config();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const engine = process.env.OPENAI_MODEL || "gpt-3.5-turbo"; //https://platform.openai.com/docs/models/gpt-3-5
 
-class OpenAI {
+class BotAI {
   roles = {
     ASSISTANT: "assistant",
     USER: "user",
@@ -18,11 +18,10 @@ class OpenAI {
   };
 
   constructor() {
-    const configuration = new Configuration({
+    this.openAi = new OpenAI({
       organization: process.env.OPENAI_ORGANIZATION,
       apiKey: process.env.OPENAI_API_KEY,
     });
-    this.openAi = new OpenAI(configuration);
   }
 
   async chat(messages) {
@@ -32,7 +31,7 @@ class OpenAI {
         messages,
       });
 
-      return response.data.choices[0].message;
+      return response.choices[0].message;
     } catch (e) {
       console.log("Error while chat", e.message);
     }
@@ -45,7 +44,7 @@ class OpenAI {
         messages,
       });
 
-      return response.data.choices[0].message;
+      return response.choices[0].message;
     } catch (e) {
       console.log("Error while chat", e.message);
     }
@@ -83,11 +82,11 @@ class OpenAI {
         stream,
         "whisper-1"
       );
-      return response.data.text;
+      return response.text;
     } catch (e) {
       console.log("Error while file transcription", e.message);
     }
   }
 }
 
-export const openai = new OpenAI();
+export const botai = new BotAI();

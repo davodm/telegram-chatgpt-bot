@@ -1,6 +1,7 @@
 node_modules
 package-lock.json
 .vscode
+.env
 # OS generated files #
 ######################
 .DS_Store

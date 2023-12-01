@@ -2,7 +2,7 @@ import { Telegraf, session } from "telegraf";
 import { message } from "telegraf/filters";
 import dotenv from "dotenv";
 import { ogg } from "./src/ogg.js";
-import { openai } from "./src/openai.js";
+import { botai } from "./src/openai.js";
 import fetch from "node-fetch";
 
 dotenv.config();
@@ -28,7 +28,7 @@ bot.on(message("text"), async (ctx) => {
   if (text.match("/image")) {
     try {
       await ctx.sendChatAction("upload_photo");
-      const image = await openai.imageGeneration(text, String(ctx.from.id));
+      const image = await botai.imageGeneration(text, String(ctx.from.id));
       await ctx.replyWithPhoto(image.path);
     } catch (e) {
       console.log("Error while image generating", e.message);
@@ -37,15 +37,15 @@ bot.on(message("text"), async (ctx) => {
     try {
       await ctx.sendChatAction("typing");
       ctx.session.messages.push({
-        role: openai.roles.USER,
+        role: botai.roles.USER,
         content: String(text),
       });
 
-      const response = await openai.chat(ctx.session.messages);
+      const response = await botai.chat(ctx.session.messages);
       const assistantMessageText = response.content;
 
       ctx.session.messages.push({
-        role: openai.roles.ASSISTANT,
+        role: botai.roles.ASSISTANT,
         content: assistantMessageText,
       });
 
@@ -68,17 +68,17 @@ bot.on(message("voice"), async (ctx) => {
     );
     const mp3Path = await ogg.toMp3(oggPath, ctx.message.from.id);
 
-    const userMessageText = await openai.transcription(mp3Path);
+    const userMessageText = await botai.transcription(mp3Path);
     ctx.session.messages.push({
-      role: openai.roles.USER,
+      role: botai.roles.USER,
       content: String(userMessageText),
     });
 
-    const response = await openai.chat(ctx.session.messages);
+    const response = await botai.chat(ctx.session.messages);
     const assistantMessageText = response.content;
 
     ctx.session.messages.push({
-      role: openai.roles.ASSISTANT,
+      role: botai.roles.ASSISTANT,
       content: String(assistantMessageText),
     });
 
