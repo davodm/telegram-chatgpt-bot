@@ -10,6 +10,10 @@ dotenv.config();
 const bot = new Telegraf(`${process.env.TELEGRAM_API_KEY}`);
 bot.use(session());
 
+const LIMITED_USERS = process?.env?.TELEGRAM_USERS
+  ? process.env.TELEGRAM_USERS.trim().split(",")
+  : [];
+
 const INITIAL_SESSION = {
   messages: [],
 };
@@ -18,12 +22,24 @@ bot.launch();
 
 bot.command("start", async (ctx) => {
   ctx.session === INITIAL_SESSION;
-  await ctx.reply("سوال خود را بصورت متنی بپرسید یا از پیام استفاده کنید...");
+  await ctx.reply("Ask your question via text or voice message");
 });
 
 bot.on(message("text"), async (ctx) => {
-  ctx.session ??= INITIAL_SESSION;
   const { text } = ctx.message;
+  const { from } = ctx.message;
+
+  // Limit to specific users
+  if (
+    LIMITED_USERS.length > 0 &&
+    LIMITED_USERS.includes(String(from.id)) === false
+  ) {
+    await ctx.reply("You are not allowed to use this bot");
+    return;
+  }
+
+  // Initialize session
+  ctx.session ??= INITIAL_SESSION;
 
   if (text.match("/image")) {
     try {
