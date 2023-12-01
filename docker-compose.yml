@@ -4,15 +4,20 @@ services:
   audio-server:
     restart: unless-stopped
     container_name: audio
+    networks:
+      - app_network
     image: ghcr.io/coqui-ai/tts-cpu
     ports:
       - "5002:5002"
     entrypoint: /bin/bash
     command: >
       -c "python3 TTS/server/server.py --model_name tts_models/en/vctk/vits"
+  
   node:
     restart: unless-stopped
     container_name: node
+    networks:
+      - app_network
     ports:
       - "3000:3000"
     build:
