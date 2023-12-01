@@ -30,3 +30,6 @@ services:
       - -c
       - |
         node index.js
+
+networks:
+  app_network:
