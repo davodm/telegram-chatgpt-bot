@@ -60,14 +60,14 @@ class BotAI {
       });
       const axiosResponse = await axios({
         method: "get",
-        url: response.data.data[0].url,
+        url: response.data[0].url,
         responseType: "stream",
       });
 
       return new Promise((resolve, reject) => {
         const stream = createWriteStream(imagePath);
         axiosResponse.data.pipe(stream);
-        stream.on("finish", () => resolve({ path: response.data.data[0].url }));
+        stream.on("finish", () => resolve({ path: response.data[0].url }));
         stream.on("error", (error) => reject(error.message));
       });
     } catch (e) {
