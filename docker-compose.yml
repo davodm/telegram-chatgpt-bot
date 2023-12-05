@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.8"
 
 services:
   audio-server:
@@ -25,8 +25,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - ./telegram-chatgpt-bot:/var/www
+    env_file:
+      - ./.env
     command:
       - /bin/sh
       - -c

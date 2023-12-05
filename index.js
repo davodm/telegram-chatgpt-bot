@@ -1,11 +1,8 @@
 import { Telegraf, session } from "telegraf";
 import { message } from "telegraf/filters";
-import dotenv from "dotenv";
 import { ogg } from "./src/ogg.js";
 import { botai } from "./src/openai.js";
 import fetch from "node-fetch";
-
-dotenv.config();
 
 const bot = new Telegraf(`${process.env.TELEGRAM_API_KEY}`);
 bot.use(session());
