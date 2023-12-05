@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from "openai";
+import { OpenAI } from "openai";
 import { createReadStream, createWriteStream } from "fs";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -8,8 +8,9 @@ import { fileURLToPath } from "url";
 dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const engine = process.env.OPENAI_MODEL || "gpt-3.5-turbo"; //https://platform.openai.com/docs/models/gpt-3-5
 
-class OpenAI {
+class BotAI {
   roles = {
     ASSISTANT: "assistant",
     USER: "user",
@@ -17,20 +18,20 @@ class OpenAI {
   };
 
   constructor() {
-    const configuration = new Configuration({
+    this.openAi = new OpenAI({
+      organization: process.env.OPENAI_ORGANIZATION,
       apiKey: process.env.OPENAI_API_KEY,
     });
-    this.openAi = new OpenAIApi(configuration);
   }
 
   async chat(messages) {
     try {
-      const response = await this.openAi.createChatCompletion({
-        model: "gpt-3.5-turbo",
+      const response = await this.openAi.chat.completions.create({
+        model: engine,
         messages,
       });
 
-      return response.data.choices[0].message;
+      return response.choices[0].message;
     } catch (e) {
       console.log("Error while chat", e.message);
     }
@@ -38,12 +39,12 @@ class OpenAI {
 
   async translate(messages) {
     try {
-      const response = await this.openAi.createChatCompletion({
-        model: "gpt-3.5-turbo",
+      const response = await this.openAi.chat.completions.create({
+        model: engine,
         messages,
       });
 
-      return response.data.choices[0].message;
+      return response.choices[0].message;
     } catch (e) {
       console.log("Error while chat", e.message);
     }
@@ -76,16 +77,15 @@ class OpenAI {
 
   async transcription(filePath) {
     try {
-      const stream = createReadStream(filePath);
-      const response = await this.openAi.createTranscription(
-        stream,
-        "whisper-1"
-      );
-      return response.data.text;
+      const response = await this.openAi.audio.transcriptions.create({
+        file: createReadStream(filePath),
+        model: "whisper-1",
+      });
+      return response.text;
     } catch (e) {
       console.log("Error while file transcription", e.message);
     }
   }
 }
 
-export const openai = new OpenAI();
+export const botai = new BotAI();

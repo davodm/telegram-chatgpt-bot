@@ -1,7 +1,10 @@
 FROM node:18-alpine
 WORKDIR /telegram-chatgpt-bot
-COPY package.json .env ./
-RUN npm install
+
+COPY package*.json ./
+RUN npm install --production
+RUN npm audit fix
 COPY . .
+
 EXPOSE 3000
-CMD node index.js
+CMD [ "npm", "start" ]
