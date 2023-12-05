@@ -77,14 +77,18 @@ bot.on(message("voice"), async (ctx) => {
   const { voice } = ctx.message;
   await ctx.sendChatAction("record_voice");
   try {
+    // Telegram audio file link
     const voiceLink = await ctx.telegram.getFileLink(voice.file_id);
+    // Create local ogg file
     const oggPath = await ogg.create(
       voiceLink.href,
       String(ctx.message.from.id)
     );
+    // Convert ogg to mp3
     const mp3Path = await ogg.toMp3(oggPath, ctx.message.from.id);
-
+    // Transcription via openAI
     const userMessageText = await botai.transcription(mp3Path);
+    
     ctx.session.messages.push({
       role: botai.roles.USER,
       content: String(userMessageText),
@@ -101,7 +105,7 @@ bot.on(message("voice"), async (ctx) => {
     await ctx.sendChatAction("record_voice");
     // if you have installed docker, you can use this code for voice message
     // it doesn't support persian language
-    const voiceAPI = process.env.VOICE_API || 'http://audio-server:5002'
+    const voiceAPI = process.env.VOICE_API || "http://audio-server:5002";
     const voiceResponse = await fetch(
       `${voiceAPI}/api/tts?text=${assistantMessageText}&speaker_id=p225&style_wav=&language_id=` // you can change speaker_id to change voice
     );

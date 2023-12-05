@@ -77,8 +77,8 @@ class BotAI {
 
   async transcription(filePath) {
     try {
-      const stream = createReadStream(filePath);
-      const response = await this.openAi.audio.transcriptions.create(stream, {
+      const response = await this.openAi.audio.transcriptions.create({
+        file: createReadStream(filePath),
         model: "whisper-1",
       });
       return response.text;
