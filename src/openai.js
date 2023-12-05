@@ -53,7 +53,7 @@ class BotAI {
   async imageGeneration(description, fileName) {
     try {
       const imagePath = resolve(__dirname, "../images", `${fileName}.jpeg`);
-      const response = await this.openAi.createImage({
+      const response = await this.openAi.images.generate({
         prompt: description,
         size: "1024x1024",
         n: 1,
